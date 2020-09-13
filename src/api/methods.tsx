@@ -9,6 +9,14 @@ export function getUsers(): Promise<User[]> {
   });
 }
 
+export function getConnectedProfile(): Promise<User> {
+  return axios
+    .get(`${process.env.REACT_APP_BACKEND}/profile/me`, {
+      withCredentials: true,
+    })
+    .then((resp) => resp.data);
+}
+
 export function login(email: string, password: string): Promise<IProfile> {
   return axios
     .post(
