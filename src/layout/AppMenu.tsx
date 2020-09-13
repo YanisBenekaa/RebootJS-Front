@@ -37,3 +37,5 @@ export function AppMenu() {
     </Fragment>
   );
 }
+
+export default AppMenu;
