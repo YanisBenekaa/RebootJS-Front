@@ -5,8 +5,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import React, { Fragment } from "react";
 import { ProfileButton } from "./ProfileButton";
+import { IDrawerContent } from "./types";
 
-export function AppMenu() {
+interface AppMenuProps {
+  changeDrawerContent: (content: IDrawerContent) => void;
+}
+
+export function AppMenu({ changeDrawerContent }: AppMenuProps) {
   return (
     <Fragment>
       <AppBar position="static" style={{ height: "10vh" }}>
@@ -29,6 +34,12 @@ export function AppMenu() {
           </Grid>
           <Grid item>
             <Toolbar>
+              <button onClick={() => changeDrawerContent("contacts")}>
+                Mets un icone
+              </button>
+              <button onClick={() => changeDrawerContent("conversations")}>
+                Je suis sans icone
+              </button>
               <ProfileButton />
             </Toolbar>
           </Grid>
