@@ -1,7 +1,7 @@
 export interface IConversationMessage {
   _id: string;
   conversationId: string;
-  createdAt: string;
+  createdAt: Date;
   emitter: string;
   targets: string[];
   content: string;
@@ -10,7 +10,7 @@ export interface IConversationMessage {
 export interface IConversation {
   _id: string;
   targets: string[];
-  updatedAt: string;
+  updatedAt: Date;
   unseenMessages: number;
   messages: IConversationMessage[];
 }
