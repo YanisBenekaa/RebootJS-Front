@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import React, { Fragment } from "react";
 import { ProfileButton } from "./ProfileButton";
 import { IDrawerContent } from "./types";
+import { Contacts, ForumSharp } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
 
 interface AppMenuProps {
   changeDrawerContent: (content: IDrawerContent) => void;
@@ -34,12 +36,18 @@ export function AppMenu({ changeDrawerContent }: AppMenuProps) {
           </Grid>
           <Grid item>
             <Toolbar>
-              <button onClick={() => changeDrawerContent("contacts")}>
-                Mets un icone
-              </button>
-              <button onClick={() => changeDrawerContent("conversations")}>
-                Je suis sans icone
-              </button>
+              <IconButton
+                color="default"
+                onClick={() => changeDrawerContent("conversations")}
+              >
+                <ForumSharp fontSize="large" />
+              </IconButton>
+              <IconButton
+                color="default"
+                onClick={() => changeDrawerContent("contacts")}
+              >
+                <Contacts fontSize="large" />
+              </IconButton>
               <ProfileButton />
             </Toolbar>
           </Grid>
