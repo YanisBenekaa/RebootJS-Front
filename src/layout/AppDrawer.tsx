@@ -8,16 +8,21 @@ import {
 } from "@material-ui/core";
 import { ArrowBackIos } from "@material-ui/icons";
 import React from "react";
+import { getUsers } from "../api/methods";
+import ConversationList from "../conversations/components/ConversationList";
 import ContactList from "../users/components/ContactList";
+import { User } from "../users/types";
 import { IDrawerContent } from "./types";
 
 interface AppDrawerProps {
   showDrawer: boolean;
   drawerContent?: IDrawerContent;
-  // drawerContent: IDrawerContent;
-  // TODO Recuperer les bonnes infos pour chaque types de contenu;
   hideDrawer: () => void;
   classes: any;
+}
+
+interface AppDrawerState {
+  users: User[];
 }
 
 const styles = (theme: Theme) =>
@@ -39,13 +44,27 @@ const styles = (theme: Theme) =>
     },
   });
 
-class AppDrawer extends React.Component<AppDrawerProps> {
+class AppDrawer extends React.Component<AppDrawerProps, AppDrawerState> {
+  constructor(props: AppDrawerProps) {
+    super(props);
+    this.state = {
+      users: [],
+    };
+  }
+
+  componentDidMount() {
+    getUsers().then((fetchedUsers) => {
+      this.setState({ users: fetchedUsers });
+    });
+  }
+
   render() {
+    const { users } = this.state;
     const content =
       this.props.drawerContent === "contacts" ? (
-        <ContactList />
+        <ContactList users={users} />
       ) : (
-        <h1>To Be Implemented</h1>
+        <ConversationList users={users} />
       );
     return this.props.showDrawer ? (
       <Drawer
