@@ -1,6 +1,7 @@
 import { User } from "../users/types";
 import axios from "axios";
 import { IProfile } from "../profile/types";
+import { IConversation } from "../conversations/types";
 
 // fetch users via the server
 export function getUsers(): Promise<User[]> {
@@ -46,4 +47,33 @@ export function register(
       lastname,
     })
     .then((resp) => resp.data);
+}
+
+export function getConversations(): Promise<IConversation[]> {
+  return Promise.resolve([
+    {
+      _id: "abcd",
+      targets: ["5f5b888b74adca1d4e71bbb0", "5f606ef451fc4331a1f26096"],
+      updatedAt: new Date().toISOString(),
+      unseenMessages: 0,
+      messages: [
+        {
+          _id: "1",
+          conversationId: "abcd",
+          createdAt: new Date().toISOString(),
+          emitter: "5f5b888b74adca1d4e71bbb0",
+          targets: ["5f606ef451fc4331a1f26096"],
+          content: "Coucou",
+        },
+        {
+          _id: "2",
+          conversationId: "abcd",
+          createdAt: new Date().toISOString(),
+          emitter: "5f606ef451fc4331a1f26096",
+          targets: ["5f5b888b74adca1d4e71bbb0"],
+          content: "Hey Comment tu vas ?",
+        },
+      ],
+    },
+  ]);
 }
