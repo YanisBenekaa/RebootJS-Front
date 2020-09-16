@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
-import { match } from "react-router-dom";
+import { match, withRouter } from "react-router-dom";
 import { getConversations } from "../../api/methods";
+import { User } from "../../users/types";
 import { IConversation } from "../types";
+import AttendeesList from "./AttendeesList";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 
@@ -11,6 +13,9 @@ interface ChatUIState {
 
 interface ChatUIProps {
   match: match<{ conversationId: string }>;
+  location: any;
+  history: any;
+  users: User[];
 }
 
 class ChatUI extends React.Component<ChatUIProps, ChatUIState> {
@@ -38,6 +43,11 @@ class ChatUI extends React.Component<ChatUIProps, ChatUIState> {
           <Fragment>
             <ChatMessages messages={this.state.conversation.messages} />
             <ChatInput conversationId={this.state.conversation._id} />
+            <AttendeesList
+              attendees={this.props.users.filter((user) =>
+                this.state.conversation?.targets.includes(user._id)
+              )}
+            />
           </Fragment>
         ) : (
           <h1>Impossible de trouver la conversation</h1>
@@ -47,4 +57,4 @@ class ChatUI extends React.Component<ChatUIProps, ChatUIState> {
   }
 }
 
-export default ChatUI;
+export default withRouter(ChatUI);
