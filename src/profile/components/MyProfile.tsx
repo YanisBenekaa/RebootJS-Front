@@ -4,27 +4,29 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { Alert } from "@material-ui/lab";
 import React from "react";
-import { getConnectedProfile } from "../../api/methods";
 import CredentialsSection from "../../register/components/CredentialsSection";
 import IdentitySection from "../../register/components/IdentitySection";
 import { validateEmailField } from "../../register/utils/validateEmailField";
 import { validateNameField } from "../../register/utils/validateNameField";
 import { validatePasswordField } from "../../register/utils/validatePasswordField";
+import { User } from "../../users/types";
 import {
   defaultFormField,
   defaultPasswordField,
   IProfileFormFields,
 } from "../../utils/types";
-import { IProfile } from "../types";
 
-export interface IProfileFormState {
+interface IProfileFormState {
   status: "ready" | "success" | "error";
   fields: IProfileFormFields;
-  profile?: IProfile;
 }
 
-class MyProfile extends React.Component<{}, IProfileFormState> {
-  constructor(props: {}) {
+interface IProfileFormProps {
+  connectedUser?: User;
+}
+
+class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
+  constructor(props: IProfileFormProps) {
     super(props);
     this.state = {
       status: "ready",
@@ -38,19 +40,12 @@ class MyProfile extends React.Component<{}, IProfileFormState> {
     };
   }
 
-  componentDidMount() {
-    //fetch connected profile
-    getConnectedProfile().then((profile) => {
-      this.setState({ profile });
-      this.resetProfile();
-    });
-  }
-
   resetProfile = () => {
-    if (this.state.profile) {
-      this.changeField("email")(this.state.profile.email);
-      this.changeField("firstname")(this.state.profile.firstname);
-      this.changeField("lastname")(this.state.profile.lastname);
+    const { connectedUser } = this.props;
+    if (connectedUser) {
+      this.changeField("email")(connectedUser.email);
+      this.changeField("firstname")(connectedUser.firstname);
+      this.changeField("lastname")(connectedUser.lastname);
       this.changeField("password")("");
       this.changeField("confirmation")("");
     }
