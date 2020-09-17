@@ -9,6 +9,7 @@ import {
 import { ArrowBackIos } from "@material-ui/icons";
 import React from "react";
 import ConversationList from "../conversations/components/ConversationList";
+import { IConversation } from "../conversations/types";
 import ContactList from "../users/components/ContactList";
 import { User } from "../users/types";
 import { IDrawerContent } from "./types";
@@ -19,6 +20,8 @@ interface AppDrawerProps {
   hideDrawer: () => void;
   classes: any;
   users: User[];
+  connectedUser?: User;
+  conversations: IConversation[];
 }
 
 const styles = (theme: Theme) =>
@@ -45,9 +48,12 @@ class AppDrawer extends React.Component<AppDrawerProps> {
     const { users } = this.props;
     const content =
       this.props.drawerContent === "contacts" ? (
-        <ContactList users={users} />
+        <ContactList connectedUser={this.props.connectedUser} users={users} />
       ) : (
-        <ConversationList users={users} />
+        <ConversationList
+          conversations={this.props.conversations}
+          users={users}
+        />
       );
     return this.props.showDrawer ? (
       <Drawer
