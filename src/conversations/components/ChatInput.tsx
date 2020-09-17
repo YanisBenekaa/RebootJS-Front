@@ -8,6 +8,7 @@ interface IChatInputState {
 
 interface IChatInputProps {
   conversationId: string;
+  doSendMessage: (message: string) => void;
 }
 
 export default class ChatInput extends React.Component<
@@ -25,6 +26,8 @@ export default class ChatInput extends React.Component<
     console.log(
       `Le message ${this.state.message} va être envoyé à la conversation ${this.props.conversationId}`
     );
+    this.props.doSendMessage(this.state.message);
+    this.setState({ message: "" });
   };
 
   updateMessage = (newValue: string) => {
