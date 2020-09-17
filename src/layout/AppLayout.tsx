@@ -1,6 +1,11 @@
 import { createStyles, Theme, withStyles } from "@material-ui/core";
 import React, { Fragment } from "react";
-import { getUsers } from "../api/methods";
+import {
+  getConnectedProfile,
+  getConversations,
+  getUsers,
+} from "../api/methods";
+import { IConversation } from "../conversations/types";
 import { User } from "../users/types";
 import AppContent from "./AppContent";
 import AppDrawer, { drawerWidth } from "./AppDrawer";
@@ -15,6 +20,9 @@ interface AppLayoutState {
   showDrawer: boolean;
   drawerContent?: IDrawerContent;
   users: User[];
+  profile?: User;
+  conversations: IConversation[];
+  polling?: NodeJS.Timeout;
 }
 
 const styles = (theme: Theme) =>
@@ -45,6 +53,7 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
     this.state = {
       showDrawer: false,
       users: [],
+      conversations: [],
     };
   }
 
@@ -56,10 +65,41 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
     this.setState({ showDrawer: false });
   };
 
-  componentDidMount() {
-    getUsers().then((fetchedUsers) => {
-      this.setState({ users: fetchedUsers });
+  fetchConversations = async (profile?: User) => {
+    if (!profile) return;
+
+    const conversations = await getConversations(profile);
+    this.setState({ conversations });
+  };
+
+  async componentDidMount() {
+    getUsers()
+      .then((fetchedUsers) => {
+        this.setState({ users: fetchedUsers });
+      })
+      .catch((error) => console.error(error));
+    try {
+      const profile = await getConnectedProfile();
+      this.setState({ profile });
+      await this.fetchConversations(profile);
+    } catch (error) {
+      console.error(error);
+    }
+
+    this.setState({
+      polling: setInterval(() => {
+        try {
+          this.fetchConversations(this.state.profile);
+        } catch (error) {
+          console.error(error);
+        }
+      }, 3000),
     });
+  }
+
+  componentWillUnmount() {
+    const { polling } = this.state;
+    if (polling) clearInterval(polling);
   }
 
   render() {
@@ -75,9 +115,15 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
       <Fragment>
         <div className={filteredClasses}>
           <AppMenu changeDrawerContent={this.changeDrawerContent} />
-          <AppContent users={this.state.users} />
+          <AppContent
+            conversations={this.state.conversations}
+            connectedUser={this.state.profile}
+            users={this.state.users}
+          />
         </div>
         <AppDrawer
+          conversations={this.state.conversations}
+          connectedUser={this.state.profile}
           users={this.state.users}
           drawerContent={this.state.drawerContent}
           showDrawer={this.state.showDrawer}
