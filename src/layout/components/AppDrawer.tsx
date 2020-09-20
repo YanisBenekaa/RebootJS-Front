@@ -8,11 +8,11 @@ import {
 } from "@material-ui/core";
 import { ArrowBackIos } from "@material-ui/icons";
 import React from "react";
-import ConversationList from "../conversations/components/ConversationList";
-import { IConversation } from "../conversations/types";
-import ContactList from "../users/components/ContactList";
-import { User } from "../users/types";
-import { IDrawerContent } from "./types";
+import ConversationList from "../../conversations/components/ConversationList";
+import { IConversation } from "../../conversations/types";
+import ContactList from "../../users/components/ContactList";
+import { User } from "../../users/types";
+import { IDrawerContent } from "../types";
 
 interface AppDrawerProps {
   showDrawer: boolean;

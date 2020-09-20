@@ -1,10 +1,10 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import ChatUI from "../conversations/components/ChatUI";
-import { IConversation } from "../conversations/types";
-import LoginScreen from "../login/components/LoginScreen";
-import MyProfile from "../profile/components/MyProfile";
-import { User } from "../users/types";
+import ChatUI from "../../conversations/components/ChatUI";
+import { IConversation } from "../../conversations/types";
+import LoginScreen from "../../login/components/LoginScreen";
+import MyProfile from "../../profile/components/MyProfile";
+import { User } from "../../users/types";
 import { HomeScreen } from "./HomeScreen";
 
 interface AppContentProps {
