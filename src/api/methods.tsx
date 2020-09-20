@@ -128,6 +128,17 @@ export async function sendMessage(
   return resp.data;
 }
 
+export async function patchConversationSeen(
+  conversationId: string
+): Promise<IProfile> {
+  const resp = await axios.patch(
+    `${process.env.REACT_APP_BACKEND}/profile/conversation-seen/${conversationId}`,
+    {},
+    { withCredentials: true }
+  );
+  return resp.data;
+}
+
 function getLastMessageDate(messages: IConversationMessage[]) {
   return messages[messages.length - 1].createdAt;
 }
