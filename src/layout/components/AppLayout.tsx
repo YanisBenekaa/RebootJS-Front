@@ -1,10 +1,6 @@
 import { createStyles, Theme, withStyles } from "@material-ui/core";
 import React, { Fragment } from "react";
-import {
-  getConnectedProfile,
-  getConversations,
-  getUsers,
-} from "../../api/methods";
+import { getConnectedProfile, getConversations } from "../../api/methods";
 import { IConversation } from "../../conversations/types";
 import { User } from "../../users/types";
 import AppContent from "./AppContent";
@@ -12,14 +8,15 @@ import AppDrawer, { drawerWidth } from "./AppDrawer";
 import AppMenu from "./AppMenu";
 import { IAppState } from "../../appReducer";
 import { connect } from "react-redux";
+import { makeFetchUsers } from "../../profile/actions/makeFetchUsers";
 
 interface AppLayoutProps {
   classes: any;
   showDrawer: boolean;
+  makeFetchUser: () => void;
 }
 
 interface AppLayoutState {
-  users: User[];
   profile?: User;
   conversations: IConversation[];
   polling?: NodeJS.Timeout;
@@ -51,7 +48,6 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
   constructor(props: AppLayoutProps) {
     super(props);
     this.state = {
-      users: [],
       conversations: [],
     };
   }
@@ -64,11 +60,7 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
   };
 
   async componentDidMount() {
-    getUsers()
-      .then((fetchedUsers) => {
-        this.setState({ users: fetchedUsers });
-      })
-      .catch((error) => console.error(error));
+    this.props.makeFetchUser();
     try {
       const profile = await getConnectedProfile();
       this.setState({ profile });
@@ -109,13 +101,11 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
           <AppContent
             conversations={this.state.conversations}
             connectedUser={this.state.profile}
-            users={this.state.users}
           />
         </div>
         <AppDrawer
           conversations={this.state.conversations}
           connectedUser={this.state.profile}
-          users={this.state.users}
         />
       </Fragment>
     );
@@ -125,4 +115,12 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
 const mapStateToProps = ({ layout }: IAppState) => ({
   showDrawer: layout.showDrawer,
 });
-export default connect(mapStateToProps)(withStyles(styles)(AppLayout));
+
+const mapDispatchToProps = (dispatch: any) => ({
+  makeFetchUser: () => dispatch(makeFetchUsers()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(AppLayout));
