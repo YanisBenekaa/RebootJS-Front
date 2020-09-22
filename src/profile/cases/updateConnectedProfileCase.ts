@@ -1,8 +1,8 @@
-import { IProfileAction, IProfileState } from "../types";
+import { IProfileState, UpdateConnectedProfileAction } from "../types";
 
 export function updateConnectedProfileCase(
   state: IProfileState,
-  action: IProfileAction
+  action: UpdateConnectedProfileAction
 ): IProfileState {
   return {
     ...state,
