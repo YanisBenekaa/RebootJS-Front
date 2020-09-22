@@ -22,7 +22,6 @@ interface AppDrawerProps {
   drawerContent?: IDrawerContent;
   hideDrawer: () => void;
   classes: any;
-  users: User[];
   connectedUser?: User;
   conversations: IConversation[];
 }
@@ -48,15 +47,11 @@ const styles = (theme: Theme) =>
 
 class AppDrawer extends React.Component<AppDrawerProps> {
   render() {
-    const { users } = this.props;
     const content =
       this.props.drawerContent === "contacts" ? (
-        <ContactList connectedUser={this.props.connectedUser} users={users} />
+        <ContactList connectedUser={this.props.connectedUser} />
       ) : (
-        <ConversationList
-          conversations={this.props.conversations}
-          users={users}
-        />
+        <ConversationList conversations={this.props.conversations} />
       );
     return this.props.showDrawer ? (
       <Drawer
