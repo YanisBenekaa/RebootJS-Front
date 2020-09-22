@@ -1,12 +1,11 @@
 import React, { Fragment } from "react";
 import { match, withRouter } from "react-router-dom";
 import { patchConversationSeen, sendMessage } from "../../api/methods";
-import { User } from "../../users/types";
 import { IConversation } from "../types";
-import AttendeesList from "./AttendeesList";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import history from "../../history";
+import AttendeesList from "./AttendeesList";
 
 interface ChatUIState {
   conversation?: IConversation;
@@ -16,7 +15,6 @@ interface ChatUIProps {
   match: match<{ conversationId: string }>;
   location: any;
   history: any;
-  users: User[];
   conversations: IConversation[];
 }
 
@@ -85,13 +83,9 @@ class ChatUI extends React.Component<ChatUIProps, ChatUIState> {
             />
             <ChatInput
               doSendMessage={this.doSendMessage}
-              conversationId={this.state.conversation._id}
+              conversationId={this.props.match.params.conversationId}
             />
-            <AttendeesList
-              attendees={this.props.users.filter((user) =>
-                this.state.conversation?.targets.includes(user._id)
-              )}
-            />
+            <AttendeesList targets={this.state.conversation?.targets} />
           </Fragment>
         ) : (
           <h1>Impossible de trouver la conversation</h1>
