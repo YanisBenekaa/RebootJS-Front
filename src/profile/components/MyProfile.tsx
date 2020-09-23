@@ -3,7 +3,9 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { Alert } from "@material-ui/lab";
+import { connect } from "react-redux";
 import React from "react";
+import { IAppState } from "../../appReducer";
 import CredentialsSection from "../../register/components/CredentialsSection";
 import IdentitySection from "../../register/components/IdentitySection";
 import { validateEmailField } from "../../register/utils/validateEmailField";
@@ -40,14 +42,19 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
     };
   }
 
+  componentDidMount() {
+    this.resetProfile();
+  }
+
   resetProfile = () => {
     const { connectedUser } = this.props;
+    console.log(connectedUser);
     if (connectedUser) {
-      this.changeField("email")(connectedUser.email);
-      this.changeField("firstname")(connectedUser.firstname);
-      this.changeField("lastname")(connectedUser.lastname);
-      this.changeField("password")("");
-      this.changeField("confirmation")("");
+      this.changeField2("email", connectedUser.email);
+      this.changeField2("firstname", connectedUser.firstname);
+      this.changeField2("lastname", connectedUser.lastname);
+      this.changeField2("password", "");
+      this.changeField2("confirmation", "");
     }
   };
 
@@ -59,12 +66,15 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
     field: "email" | "firstname" | "lastname" | "password" | "confirmation"
   ): ((value: string) => void) => {
     return (value: string) => {
+      console.log("changing field");
+      console.log(this.state);
       const newState = {
         fields: {
           ...this.state.fields,
           [field]: { ...this.state.fields[field], value: value },
         },
       };
+      console.log(newState);
 
       // checking fiels conditions
       switch (field) {
@@ -88,6 +98,44 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
       }
       this.setState(newState);
     };
+  };
+
+  changeField2 = (
+    field: "email" | "firstname" | "lastname" | "password" | "confirmation",
+    value: string
+  ): void => {
+    console.log("changing field");
+    console.log(this.state);
+    const newState = {
+      fields: {
+        ...this.state.fields,
+        [field]: { ...this.state.fields[field], value: value },
+      },
+    };
+    console.log(newState);
+
+    // checking fiels conditions
+    switch (field) {
+      case "email":
+        const { email } = newState.fields;
+        validateEmailField(email);
+        break;
+      case "firstname":
+        const { firstname } = newState.fields;
+        validateNameField(firstname);
+        break;
+      case "lastname":
+        const { lastname } = newState.fields;
+        validateNameField(lastname);
+        break;
+      case "password":
+      case "confirmation":
+        const { password, confirmation } = newState.fields;
+        validatePasswordField(password, confirmation, true);
+        break;
+    }
+    console.log(newState);
+    this.setState(newState);
   };
 
   render() {
@@ -185,4 +233,7 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
   }
 }
 
-export default MyProfile;
+const mapStateToProps = ({ profile }: IAppState) => ({
+  connectedUser: profile.connectedProfile,
+});
+export default connect(mapStateToProps)(MyProfile);
