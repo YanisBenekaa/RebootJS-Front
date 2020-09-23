@@ -14,3 +14,16 @@ export interface IConversation {
   unseenMessages: number;
   messages: IConversationMessage[];
 }
+
+export const UPDATE_CONVERSATION_LIST = "UPDATE_CONVERSATION_LIST";
+
+export interface UpdateConversationListAction {
+  type: typeof UPDATE_CONVERSATION_LIST;
+  conversations: IConversation[];
+}
+
+export interface IConversationState {
+  list: IConversation[];
+}
+
+export type IConversationAction = UpdateConversationListAction;
