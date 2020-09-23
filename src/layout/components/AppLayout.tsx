@@ -1,24 +1,21 @@
 import { createStyles, Theme, withStyles } from "@material-ui/core";
 import React, { Fragment } from "react";
-import { getConnectedProfile, getConversations } from "../../api/methods";
-import { IConversation } from "../../conversations/types";
-import { User } from "../../users/types";
 import AppContent from "./AppContent";
 import AppDrawer, { drawerWidth } from "./AppDrawer";
 import AppMenu from "./AppMenu";
 import { IAppState } from "../../appReducer";
 import { connect } from "react-redux";
 import { makeFetchUsers } from "../../profile/actions/makeFetchUsers";
+import { makeFetchConversation } from "../../conversations/actions/makeFetchConversations";
 
 interface AppLayoutProps {
   classes: any;
   showDrawer: boolean;
   makeFetchUser: () => void;
+  makeFetchConversation: () => void;
 }
 
 interface AppLayoutState {
-  profile?: User;
-  conversations: IConversation[];
   polling?: NodeJS.Timeout;
 }
 
@@ -47,35 +44,16 @@ const styles = (theme: Theme) =>
 class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
   constructor(props: AppLayoutProps) {
     super(props);
-    this.state = {
-      conversations: [],
-    };
+    this.state = {};
   }
 
-  fetchConversations = async (profile?: User) => {
-    if (!profile) return;
-
-    const conversations = await getConversations(profile);
-    this.setState({ conversations });
-  };
-
-  async componentDidMount() {
+  componentDidMount() {
     this.props.makeFetchUser();
-    try {
-      const profile = await getConnectedProfile();
-      this.setState({ profile });
-      await this.fetchConversations(profile);
-    } catch (error) {
-      console.error(error);
-    }
+    this.props.makeFetchConversation();
 
     this.setState({
       polling: setInterval(() => {
-        try {
-          this.fetchConversations(this.state.profile);
-        } catch (error) {
-          console.error(error);
-        }
+        this.props.makeFetchConversation();
       }, 3000),
     });
   }
@@ -98,15 +76,9 @@ class AppLayout extends React.Component<AppLayoutProps, AppLayoutState> {
       <Fragment>
         <div className={filteredClasses}>
           <AppMenu />
-          <AppContent
-            conversations={this.state.conversations}
-            connectedUser={this.state.profile}
-          />
+          <AppContent />
         </div>
-        <AppDrawer
-          conversations={this.state.conversations}
-          connectedUser={this.state.profile}
-        />
+        <AppDrawer />
       </Fragment>
     );
   }
@@ -118,6 +90,7 @@ const mapStateToProps = ({ layout }: IAppState) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
   makeFetchUser: () => dispatch(makeFetchUsers()),
+  makeFetchConversation: () => dispatch(makeFetchConversation()),
 });
 
 export default connect(

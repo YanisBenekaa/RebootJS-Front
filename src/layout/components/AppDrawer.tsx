@@ -11,9 +11,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { IAppState } from "../../appReducer";
 import ConversationList from "../../conversations/components/ConversationList";
-import { IConversation } from "../../conversations/types";
 import ContactList from "../../users/components/ContactList";
-import { User } from "../../users/types";
 import { changeDrawerContent } from "../actions/changeDrawerContentAction";
 import { IDrawerContent } from "../types";
 
@@ -22,8 +20,6 @@ interface AppDrawerProps {
   drawerContent?: IDrawerContent;
   hideDrawer: () => void;
   classes: any;
-  connectedUser?: User;
-  conversations: IConversation[];
 }
 
 const styles = (theme: Theme) =>
@@ -49,9 +45,9 @@ class AppDrawer extends React.Component<AppDrawerProps> {
   render() {
     const content =
       this.props.drawerContent === "contacts" ? (
-        <ContactList connectedUser={this.props.connectedUser} />
+        <ContactList />
       ) : (
-        <ConversationList conversations={this.props.conversations} />
+        <ConversationList />
       );
     return this.props.showDrawer ? (
       <Drawer
