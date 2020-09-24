@@ -24,4 +24,5 @@ class ConversationList extends React.Component<ConversationListProps> {
 const mapStateToProps = ({ conversation }: IAppState) => ({
   conversations: conversation.list,
 });
+
 export default connect(mapStateToProps)(ConversationList);
