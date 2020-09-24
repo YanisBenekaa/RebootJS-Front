@@ -6,12 +6,13 @@ import Typography from "@material-ui/core/Typography";
 import React, { Fragment } from "react";
 import { ProfileButton } from "./ProfileButton";
 import { IDrawerContent } from "../types";
-import { Contacts, ForumSharp } from "@material-ui/icons";
+import { AccountCircle, Contacts, ForumSharp } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
 import { IAppState } from "../../appReducer";
 import { connect } from "react-redux";
 import { IProfile } from "../../profile/types";
 import { changeDrawerContent } from "../actions/changeDrawerContentAction";
+import { Link } from "react-router-dom";
 
 interface AppMenuProps {
   changeDrawerContent: (content: IDrawerContent) => void;
@@ -19,6 +20,17 @@ interface AppMenuProps {
 }
 
 export function AppMenu({ changeDrawerContent, profile }: AppMenuProps) {
+  const disconnectNavbar = (
+    <Toolbar>
+      <Link to="/login">
+        <IconButton color="default" aria-label="profile">
+          {" "}
+          <AccountCircle fontSize="large" />{" "}
+        </IconButton>{" "}
+      </Link>
+    </Toolbar>
+  );
+
   return (
     <Fragment>
       <AppBar position="static" style={{ height: "10vh" }}>
@@ -44,21 +56,25 @@ export function AppMenu({ changeDrawerContent, profile }: AppMenuProps) {
             </Grid>
           ) : null}
           <Grid item>
-            <Toolbar>
-              <IconButton
-                color="default"
-                onClick={() => changeDrawerContent("conversations")}
-              >
-                <ForumSharp fontSize="large" />
-              </IconButton>
-              <IconButton
-                color="default"
-                onClick={() => changeDrawerContent("contacts")}
-              >
-                <Contacts fontSize="large" />
-              </IconButton>
-              <ProfileButton />
-            </Toolbar>
+            {profile ? (
+              <Toolbar>
+                <IconButton
+                  color="default"
+                  onClick={() => changeDrawerContent("conversations")}
+                >
+                  <ForumSharp fontSize="large" />
+                </IconButton>
+                <IconButton
+                  color="default"
+                  onClick={() => changeDrawerContent("contacts")}
+                >
+                  <Contacts fontSize="large" />
+                </IconButton>
+                <ProfileButton />
+              </Toolbar>
+            ) : (
+              disconnectNavbar
+            )}
           </Grid>
         </Grid>
       </AppBar>
