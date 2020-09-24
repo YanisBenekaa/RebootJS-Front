@@ -1,5 +1,6 @@
 import { connect } from "../../api/socket_methods";
 import { IAppState } from "../../appReducer";
+import { updateConversationMessage } from "../../conversations/actions/updateConversationMessage";
 import { IConversationMessage } from "../../conversations/types";
 
 export function makeStartSocket() {
@@ -11,7 +12,7 @@ export function makeStartSocket() {
     });
 
     socket.on("chat-message", (message: IConversationMessage) => {
-      dispatch(updateConversationWithNewMessage(message));
+      dispatch(updateConversationMessage(message));
     });
   };
 }
