@@ -7,10 +7,12 @@ import history from "../../history";
 import { IProfile } from "../../profile/types";
 import { connect } from "react-redux";
 import { IAppState } from "../../appReducer";
+import { makeEnsureConversation } from "../../conversations/actions/makeEnsureConversation";
 
 interface ContactListProps {
   users: IProfile[];
   connectedUser?: User;
+  makeEnsureConversation: (conversationId: string, target: string) => void;
 }
 
 class ContactList extends React.Component<ContactListProps> {
@@ -21,6 +23,7 @@ class ContactList extends React.Component<ContactListProps> {
         connectedUser._id,
         target
       );
+      this.props.makeEnsureConversation(conversationId, target);
       return history.push(`/conversation/${conversationId}?target=${target}`);
     }
   };
@@ -64,4 +67,9 @@ const mapStateToProps = ({ profile }: IAppState) => ({
   users: profile.list,
   connectedUser: profile.connectedProfile,
 });
-export default connect(mapStateToProps)(ContactList);
+
+const mapDispatchToProps = (dispatch: any) => ({
+  makeEnsureConversation: (conversationId: string, target: string) =>
+    dispatch(makeEnsureConversation(conversationId, target)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
