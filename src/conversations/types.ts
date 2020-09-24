@@ -16,14 +16,22 @@ export interface IConversation {
 }
 
 export const UPDATE_CONVERSATION_LIST = "UPDATE_CONVERSATION_LIST";
+export const UPDATE_CONVERSATION_MESSAGE = "UPDATE_CONVERSATION_MESSAGE";
 
 export interface UpdateConversationListAction {
   type: typeof UPDATE_CONVERSATION_LIST;
   conversations: IConversation[];
 }
 
+export interface UpdateConversationMessageAction {
+  type: typeof UPDATE_CONVERSATION_MESSAGE;
+  message: IConversationMessage;
+}
+
 export interface IConversationState {
   list: IConversation[];
 }
 
-export type IConversationAction = UpdateConversationListAction;
+export type IConversationAction =
+  | UpdateConversationListAction
+  | UpdateConversationMessageAction;
