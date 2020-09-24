@@ -8,6 +8,7 @@ import { validateRequiredField } from "../../utils/validateRequiredField";
 import { connect } from "react-redux";
 import { updateConnectedProfile } from "../../profile/actions/updateConnectedProfile";
 import { IProfile } from "../../profile/types";
+import { makeInitApp } from "../../layout/actions/makeInitApp";
 
 interface LoginFormState {
   email: IFormField;
@@ -17,6 +18,7 @@ interface LoginFormState {
 
 interface LoginFormProps {
   updateIdentity: (profile: IProfile) => void;
+  makeInitApp: () => void;
 }
 
 class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
@@ -34,6 +36,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     login(this.state.email.value, this.state.password.value)
       .then((profile) => {
         this.props.updateIdentity(profile);
+        this.props.makeInitApp();
         history.push("/");
         // this.setState({status: 'success'})
       })
@@ -123,6 +126,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
 const mapDispatchToProps = (dispatch: any) => ({
   updateIdentity: (profile: IProfile) =>
     dispatch(updateConnectedProfile(profile)),
+  makeInitApp: () => dispatch(makeInitApp()),
 });
 
 // export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
